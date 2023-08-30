@@ -8,10 +8,6 @@ const fetchData = async (endpoint) => {
 }
 const getPostAndCommentById = async (id) => {
     try {
-        // const [post, comment] = await Promise.all([
-        //     fetchData(`posts/${id}`),
-        //     fetchData(`comments/${id}`)
-        // ])
         const post = await fetchData(`posts/${id}`);
         const comment = await fetchData(`comments`);
         const commentOfPost = comment.filter(c => c.postId === id)
@@ -53,11 +49,11 @@ const getPostAndCommentById = async (id) => {
 
         //5. Reformat the data count post comment
         const reformatUser = UserCommentLengthMore3.map(user => {
-            const { comments, posts, ...another } = user;
+            const { commentsCount, postsCount, ...another } = user;
             return {
                 ...another,
-                commentsCount: comments.length,
-                postsCount: posts.length
+                commentsCount: user.comments.length,
+                postsCount: user.posts.length
             }
         });
         console.log("Reformat: ", reformatUser);
@@ -89,13 +85,13 @@ const getPostAndCommentById = async (id) => {
         console.log('userSortByPost: ', userSortByPost);
 
         //8. Merge post comment
+
         const data = await getPostAndCommentById(1);
         const mergedPostComment = {
             ...data.post,
             comment: [data.commentOfPost]
         };
         console.log('Merger: ', mergedPostComment)
-
 
     } catch (error) {
         console.log(error);
