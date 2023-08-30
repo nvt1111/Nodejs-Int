@@ -52,7 +52,6 @@ const getPostAndCommentById = async (id) => {
 
         //5. Reformat the data count post comment
         const reformatUser = UserCommentLengthMore3.map(user => {
-            const { comments, posts, ...another } = user;
             return {
                 ...another,
                 commentsCount: comments.length,
@@ -63,7 +62,6 @@ const getPostAndCommentById = async (id) => {
 
         //6. Who is the user with the most comments/posts?
         // reformatUser.slice() //copy
-        // Dung Reduce (accumulator, currentValue)
         const userMostPost = reformatUser.reduce((userA, userB) => {
             if (userB.postsCount > userA.postsCount) {
                 return userB;
