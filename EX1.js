@@ -35,6 +35,7 @@ const getPostAndCommentById = async (id) => {
             fetchData('comments')
         ])
         const PostCommentUserMap = getUser.map((user) => {
+            //todo : đoạn này xử lí như câu 5 em nhé 
             return {
                 id: user.id,
                 name: user.name,
@@ -91,6 +92,7 @@ const getPostAndCommentById = async (id) => {
         console.log('userSortByPost: ', userSortByPost);
 
         //8. Merge post comment
+        //todo: đừng viết thế này viết thành async await nhé 
         getPostAndCommentById(5)
             .then((data) => {
                 const mergedPostComment = {
