@@ -8,13 +8,16 @@ const fetchData = async (endpoint) => {
 }
 const getPostAndCommentById = async (id) => {
     try {
-        const [post, comment] = await Promise.all([
-            fetchData(`posts/${id}`),
-            fetchData(`comments/${id}`)
-        ])
+        // const [post, comment] = await Promise.all([
+        //     fetchData(`posts/${id}`),
+        //     fetchData(`comments/${id}`)
+        // ])
+        const post = await fetchData(`posts/${id}`);
+        const comment = await fetchData(`comments`);
+        const commentOfPost = comment.filter(c => c.postId === id)
         return {
             post,
-            comment
+            commentOfPost
         }
     } catch (error) {
         next(error);
@@ -88,11 +91,11 @@ const getPostAndCommentById = async (id) => {
         console.log('userSortByPost: ', userSortByPost);
 
         //8. Merge post comment
-        getPostAndCommentById(1)
+        getPostAndCommentById(5)
             .then((data) => {
                 const mergedPostComment = {
                     ...data.post,
-                    comment: [data.comment]
+                    comment: [data.commentOfPost]
                 };
                 console.log('Merger: ', mergedPostComment)
             })
