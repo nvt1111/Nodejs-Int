@@ -3,7 +3,7 @@ const fetchData = async (endpoint) => {
         const data = await fetch(`https://jsonplaceholder.typicode.com/${endpoint}`);
         return data.json();
     } catch (error) {
-        next(error);
+        console.log(error);
     }
 }
 const getPostAndCommentById = async (id) => {
@@ -35,11 +35,9 @@ const getPostAndCommentById = async (id) => {
             fetchData('comments')
         ])
         const PostCommentUserMap = getUser.map((user) => {
+            const { comments, posts, ...another } = user;
             return {
-                id: user.id,
-                name: user.name,
-                username: user.username,
-                email: user.email,
+                ...another,
                 comments: (getComment.filter((comment) => comment.email === user.email)),
                 posts: (getPost.filter((post) => post.userId === user.id))
             }
@@ -91,15 +89,13 @@ const getPostAndCommentById = async (id) => {
         console.log('userSortByPost: ', userSortByPost);
 
         //8. Merge post comment
-        getPostAndCommentById(5)
-            .then((data) => {
-                const mergedPostComment = {
-                    ...data.post,
-                    comment: [data.commentOfPost]
-                };
-                console.log('Merger: ', mergedPostComment)
-            })
-            .catch(err => console.log(err))
+        const data = await getPostAndCommentById(1);
+        const mergedPostComment = {
+            ...data.post,
+            comment: [data.commentOfPost]
+        };
+        console.log('Merger: ', mergedPostComment)
+
 
     } catch (error) {
         console.log(error);
