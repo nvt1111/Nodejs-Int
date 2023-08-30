@@ -39,6 +39,13 @@ const fetchData = async (endpoint) => {
 
         //5. Reformat the data count post comment
         const reformatUser = UserCommentLengthMore3.map(user => {
+            //todo : thay vì ghi lai hết thì ta có thể viết nó gọn lại thế này , tham khảo nhé 
+            // const { comments, posts, ...another } = item;
+            // return {
+            // ...another,
+            // commentsCount: comments.length,
+            // postsCount: posts.length,
+            // };
             return {
                 id: user.id,
                 name: user.name,
@@ -52,6 +59,7 @@ const fetchData = async (endpoint) => {
 
         //6. Who is the user with the most comments/posts?
         // reformatUser.slice() //copy
+        //todo : dùng thử reduce nhé , câu 7 tương tự  
         const userSortByPost = reformatUser.slice().sort((userA, userB) => {
             userB.comments - userA.comments
         })
@@ -66,6 +74,7 @@ const fetchData = async (endpoint) => {
         console.log('userSortByPost: ', userSortByPost);
 
         //8. Merge post comment
+        //todo : đừng đặt tên kiểu getPostById1 đặt getPostById thôi cho nó tổng quát nhé có thể tách cái này thành 1 hàm riêng cho nó tổng quát cũng đc 
         const getPostById1 = getPost.filter(post => post.id === 1);
         const getCommentByPostId1 = getComment.filter(cmt => cmt.postId === 1)
         const mergedPostComment = {
