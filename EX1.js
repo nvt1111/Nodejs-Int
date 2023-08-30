@@ -52,6 +52,7 @@ const getPostAndCommentById = async (id) => {
 
         //5. Reformat the data count post comment
         const reformatUser = UserCommentLengthMore3.map(user => {
+            const { comments, posts, ...another } = user;
             return {
                 ...another,
                 commentsCount: comments.length,
