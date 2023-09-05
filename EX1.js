@@ -52,8 +52,8 @@ const getPostAndCommentById = async (id) => {
             const { comments, posts, ...another } = user;
             return {
                 ...another,
-                commentsCount: user.comments.length,
-                postsCount: user.posts.length
+                commentsCount: comments.length,
+                postsCount: posts.length
             }
         });
         console.log("5. Reformat: ", reformatData);
