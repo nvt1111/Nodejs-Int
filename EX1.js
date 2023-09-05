@@ -10,7 +10,7 @@ const getPostAndCommentById = async (id) => {
     try {
         const post = await fetchData(`posts/${id}`);
         const comment = await fetchData(`comments`);
-        const commentOfPost = comment.filter(c => c.postId === id)
+        const commentOfPost = comment.filter(comment => comment.postId === id)
         return {
             post,
             commentOfPost
@@ -22,76 +22,74 @@ const getPostAndCommentById = async (id) => {
 (async () => {
     try {
         //2. get 10 users
-        const getUser = await fetchData('users');
-        console.log('all user:', getUser)
+        const users = await fetchData('users');
+        console.log('2. all user:', users)
 
         //3. Post and Cmt User map
-        const [getPost, getComment] = await Promise.all([
+        const [posts, comments] = await Promise.all([
             fetchData('posts'),
             fetchData('comments')
         ])
-        const PostCommentUserMap = getUser.map((user) => {
-            const { comments, posts, ...another } = user;
+        //  pascal case => camelcase
+        const postsAndCommentsWithUsers = users.map((user) => {
+            const { ...another } = user;
             return {
                 ...another,
-                comments: (getComment.filter((comment) => comment.email === user.email)),
-                posts: (getPost.filter((post) => post.userId === user.id))
+                comments: (comments.filter((comment) => comment.email === user.email)),
+                posts: (posts.filter((post) => post.userId === user.id))
             }
         });
-        console.log("Post comment User map: ", PostCommentUserMap);
+        console.log("3. posts And Comment With Users: ", postsAndCommentsWithUsers);
 
         //4. filter user comment lenth > 3
-        const UserCommentLengthMore3 = JSON.parse(JSON.stringify(PostCommentUserMap));
-        // const UserCommentLengthMore3 = [...PostCommentUserMap]
-        console.log("User comment lenth > 3: ", UserCommentLengthMore3.filter(
+        const usersWithMoreThan3Comments = JSON.parse(JSON.stringify(postsAndCommentsWithUsers));
+        console.log("4. User comment lenth > 3: ", usersWithMoreThan3Comments.filter(
             user => user.comments.length > 3
         ));
 
         //5. Reformat the data count post comment
-        const reformatUser = UserCommentLengthMore3.map(user => {
-            const { commentsCount, postsCount, ...another } = user;
+        const reformatData = usersWithMoreThan3Comments.map(user => {
+            const { comments, posts, ...another } = user;
             return {
                 ...another,
                 commentsCount: user.comments.length,
                 postsCount: user.posts.length
             }
         });
-        console.log("Reformat: ", reformatUser);
+        console.log("5. Reformat: ", reformatData);
 
         //6. Who is the user with the most comments/posts?
-        // reformatUser.slice() //copy
-        const userMostPost = reformatUser.reduce((userA, userB) => {
+        const userWithMostPosts = reformatData.reduce((userA, userB) => {
             if (userB.postsCount > userA.postsCount) {
                 return userB;
             } else {
                 return userA;
             }
         })
-        console.log('userMostPost: ', userMostPost);
+        console.log('6. userWithMostPosts: ', userWithMostPosts);
 
-        const userMostCom = reformatUser.reduce((userA, userB) => {
+        const userWithMostComments = reformatData.reduce((userA, userB) => {
             if (userB.commentsCount > userA.commentsCount) {
                 return userB;
             } else {
                 return userA;
             }
         })
-        console.log('userMostCom: ', userMostCom);
+        console.log('6. userWithMostComments: ', userWithMostComments);
 
         //7. Sort the list of users by the postsCount value descending?
-        const userSortByPost = reformatUser.slice().sort((userA, userB) => {
+        const userSortedByPostCount = reformatData.sort((userA, userB) => {
             return userB.postsCount - userA.postsCount;
         });
-        console.log('userSortByPost: ', userSortByPost);
+        console.log('7. userSortedByPostCount: ', userSortedByPostCount);
 
         //8. Merge post comment
-
         const data = await getPostAndCommentById(1);
-        const mergedPostComment = {
+        const postWithComments = {
             ...data.post,
-            comment: [data.commentOfPost]
+            comments: [data.commentOfPost]
         };
-        console.log('Merger: ', mergedPostComment)
+        console.log('8. Merger: ', postWithComments)
 
     } catch (error) {
         console.log(error);
